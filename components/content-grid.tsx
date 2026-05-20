@@ -120,7 +120,7 @@ function ContentCard({
       {/* 이미지 */}
       {image && (
         <div className="w-full flex justify-center mb-4">
-          <img src={image} alt={title} className="rounded-xl object-cover w-28 h-28" />
+          <img src={image} alt={title} className="rounded-xl object-cover w-20 h-20" />
         </div>
       )}
 
