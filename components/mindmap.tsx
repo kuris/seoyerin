@@ -53,6 +53,18 @@ export function Mindmap() {
     setNodes((prev) => prev.map((n) => (n.id === nodeId ? { ...n, angle: Math.round(normAngle) } : n)))
   }
 
+  function cleanTitle(title: string) {
+    // 1. Remove HTML entities
+    let cleaned = title.replace(/&[a-z0-9#]+;/gi, ' ');
+    // 2. Remove Hashtags (anything starting with # until a space)
+    cleaned = cleaned.replace(/#[^\s]+/g, '');
+    // 3. Trim extra spaces
+    cleaned = cleaned.trim();
+    // 4. If empty after cleaning (rare), return original but truncated
+    if (!cleaned) return title.substring(0, 20) + '...';
+    return cleaned.length > 25 ? cleaned.substring(0, 25) + '...' : cleaned;
+  }
+
   return (
     <section id="mindmap" className="relative py-20 bg-background overflow-hidden min-h-[95vh] flex flex-col justify-center">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
@@ -172,7 +184,7 @@ export function Mindmap() {
                             className="flex items-center justify-center rounded-full bg-background/90 border border-border/50 text-muted-foreground text-[10px] font-medium text-center px-3 hover:border-accent hover:text-accent shadow-2xl transition-all overflow-hidden leading-tight"
                             style={{ width: subSize, height: subSize }}
                           >
-                            {post.title.length > 30 ? post.title.substring(0, 30) + '...' : post.title}
+                            {cleanTitle(post.title)}
                           </a>
                         </motion.div>
                       )
