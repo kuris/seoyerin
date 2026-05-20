@@ -11,7 +11,7 @@ const contentCards = [
     icon: <BookOpen className="w-6 h-6" />,
     color: "primary",
     tag: "TOEIC",
-    image: "/placeholder-user.jpg",
+    image: "/1.png",
   },
   {
     id: 2,
@@ -20,7 +20,7 @@ const contentCards = [
     icon: <MessageCircle className="w-6 h-6" />,
     color: "accent",
     tag: "Language",
-    image: "/placeholder.jpg",
+    image: "/2.png",
   },
   {
     id: 3,
@@ -29,7 +29,7 @@ const contentCards = [
     icon: <Sparkles className="w-6 h-6" />,
     color: "primary",
     tag: "Comedy",
-    image: "/placeholder-logo.png",
+    image: "/3.png",
   },
   {
     id: 4,
@@ -39,7 +39,7 @@ const contentCards = [
     color: "accent",
     tag: "19+",
     restricted: true,
-    image: "/apple-icon.png",
+    image: "/4.png",
   },
 ]
 
