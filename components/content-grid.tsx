@@ -11,6 +11,7 @@ const contentCards = [
     icon: <BookOpen className="w-6 h-6" />,
     color: "primary",
     tag: "TOEIC",
+    image: "/placeholder-user.jpg",
   },
   {
     id: 2,
@@ -19,6 +20,7 @@ const contentCards = [
     icon: <MessageCircle className="w-6 h-6" />,
     color: "accent",
     tag: "Language",
+    image: "/placeholder.jpg",
   },
   {
     id: 3,
@@ -27,6 +29,7 @@ const contentCards = [
     icon: <Sparkles className="w-6 h-6" />,
     color: "primary",
     tag: "Comedy",
+    image: "/placeholder-logo.png",
   },
   {
     id: 4,
@@ -36,6 +39,7 @@ const contentCards = [
     color: "accent",
     tag: "19+",
     restricted: true,
+    image: "/apple-icon.png",
   },
 ]
 
@@ -82,6 +86,7 @@ function ContentCard({
   color,
   tag,
   restricted,
+  image,
 }: {
   title: string
   description: string
@@ -89,6 +94,7 @@ function ContentCard({
   color: "primary" | "accent"
   tag: string
   restricted?: boolean
+  image?: string
 }) {
   const borderClass = color === "primary" ? "hover:border-primary" : "hover:border-accent"
   const iconBgClass = color === "primary" ? "bg-primary/20 text-primary" : "bg-accent/20 text-accent"
@@ -108,6 +114,13 @@ function ContentCard({
           <span className="px-2 py-1 bg-destructive/20 text-destructive text-xs font-mono rounded-full border border-destructive/30">
             19+
           </span>
+        </div>
+      )}
+
+      {/* 이미지 */}
+      {image && (
+        <div className="w-full flex justify-center mb-4">
+          <img src={image} alt={title} className="rounded-xl object-cover w-28 h-28" />
         </div>
       )}
 
