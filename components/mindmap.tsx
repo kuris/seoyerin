@@ -161,7 +161,10 @@ export function Mindmap() {
                       <animate attributeName="stroke-dashoffset" from="100" to="0" dur="5s" repeatCount="indefinite" />
                     </path>
                     {expandedCategoryId === node.id && node.posts && node.posts.slice(0, 6).map((post: any, i: number) => {
-                      const subX = isFullscreen ? 550 : 420;
+                      const isLeftSide = x < 0;
+                      const subX = isLeftSide 
+                        ? (isFullscreen ? -550 : -420) 
+                        : (isFullscreen ? 550 : 420);
                       const subY = -250 + (i * 100);
                       
                       return (
@@ -227,7 +230,10 @@ export function Mindmap() {
                       </motion.button>
                     </motion.div>
                     {expandedCategoryId === node.id && node.posts && node.posts.slice(0, 6).map((post: any, i: number) => {
-                      const subX = isFullscreen ? 550 : 420;
+                      const isLeftSide = x < 0;
+                      const subX = isLeftSide 
+                        ? (isFullscreen ? -550 : -420) 
+                        : (isFullscreen ? 550 : 420);
                       const subY = -250 + (i * 100);
                       const subSize = 110
                       return (
