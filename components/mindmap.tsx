@@ -75,7 +75,8 @@ export function Mindmap() {
             };
           })
           setNodes(categoryNodes)
-          playSound('expand');
+          // 마인드맵 최초 로딩시 사운드
+          playSound('mechanical');
         }
       } catch (err) {
         console.error("Failed RSS fetch:", err)
@@ -88,7 +89,7 @@ export function Mindmap() {
     if (node.type === 'category') {
       setExpandedCategoryId((prev: any) => {
         const isExpanding = prev !== node.id;
-        playSound(isExpanding ? 'expand' : 'click');
+        playSound(isExpanding ? 'typewriter' : 'click');
         return isExpanding ? node.id : null;
       });
     } else {
