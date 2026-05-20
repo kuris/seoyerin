@@ -14,7 +14,33 @@ const initialNodes = [
 export function Mindmap() {
   const [nodes, setNodes] = useState(initialNodes)
   const [radius, setRadius] = useState(180)
+  const [postPool, setPostPool] = useState<any[]>([])
   const containerRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    async function fetchRSS() {
+      try {
+        const response = await fetch('/api/rss')
+        const data = await response.json()
+        if (Array.isArray(data) && data.length > 0) {
+          setPostPool(data)
+          // Update initial nodes with latest posts
+          const updatedInitial = data.slice(0, 4).map((item: any, index: number) => ({
+            id: index + 1,
+            label: item.title.substring(0, 20) + (item.title.length > 20 ? "..." : ""),
+            href: item.link,
+            angle: [200, 260, 320, 20][index],
+            size: 100,
+            color: index % 2 === 0 ? "primary" : "accent"
+          }))
+          setNodes(updatedInitial)
+        }
+      } catch (err) {
+        console.error("Failed to load RSS:", err)
+      }
+    }
+    fetchRSS()
+  }, [])
 
   function updateNode(id: number, patch: Partial<typeof initialNodes[0]>) {
     setNodes((prev) => prev.map((n) => (n.id === id ? { ...n, ...patch } : n)))
@@ -22,15 +48,15 @@ export function Mindmap() {
 
   function addNode() {
     const id = Date.now()
-    const pool = [
-      { label: "봄날의 영어", href: "https://chatgpts.kr/entry/%EB%B4%84%EB%82%A0-%EB%8B%B9%EC%8B%A0%EC%9D%98-%EC%98%81%EC%96%B4%EB%A5%BC-%EA%BD%83%ED%94%BC%EC%9A%B8-%EC%8B%9C%EA%B0%84-%F0%9F%8C%B8" },
-      { label: "전략적 결정", href: "https://chatgpts.kr/entry/div-stylemax-width850px-margin0-auto-font-familyNoto-Sans-KR-sans-serifh1-stylefont-size36px-color333-text-aligncenter-margin-bottom40px-line-height14%EC%95%BC-%EC%98%A4%EB%8A%98-%EC%98%A4%ED%9B%84-%EB%84%88-%ED%98%B9%EC%8B%9C%E2%80%A6-%EB%82%98%EB%9E%91-%EC%98%81%EC%96%B4-%EB%AC%B8%EC%9E%A5-%ED%95%98%EB%82%98-%EC%A1%B0%EC%A0%B8%EB%B3%BC-%..." }
+    const pool = postPool.length > 0 ? postPool : [
+      { title: "봄날의 영어", link: "https://chatgpts.kr/entry/%EB%B4%84%EB%82%A0-%EB%8B%B9%EC%8B%A0%EC%9D%98-%EC%98%81%EC%96%B4%EB%A5%BC-%EA%BD%83%ED%94%BC%EC%9A%B8-%EC%8B%9C%EA%B0%84-%F0%9F%8C%B8" },
+      { title: "전략적 결정", link: "https://chatgpts.kr/entry/div-stylemax-width850px-margin0-auto-font-familyNoto-Sans-KR-sans-serifh1-stylefont-size36px-color333-text-aligncenter-margin-bottom40px-line-height14%EC%95%BC-%EC%98%A4%EB%8A%98-%EC%98%A4%ED%9B%84-%EB%84%88-%ED%98%B9%EC%8B%9C%E2%80%A6-%EB%82%98%EB%9E%91-%EC%98%81%EC%96%B4-%EB%AC%B8%EC%9E%A5-%ED%95%98%EB%82%98-%EC%A1%B0%EC%A0%B8%EB%B3%BC-%..." }
     ]
     const item = pool[Math.floor(Math.random() * pool.length)]
     const newNode = {
       id,
-      label: item.label,
-      href: item.href,
+      label: item.title.substring(0, 20) + (item.title.length > 20 ? "..." : ""),
+      href: item.link,
       angle: Math.random() * 360,
       size: 80,
       color: Math.random() > 0.5 ? "primary" : "accent",
