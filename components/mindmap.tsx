@@ -2,13 +2,33 @@
 
 import React, { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Activity, Cpu, Terminal } from "lucide-react"
+import { Activity, Cpu, Terminal, Maximize, Minimize } from "lucide-react"
 
 export function Mindmap() {
   const [nodes, setNodes] = useState<any[]>([])
   const [radius] = useState(250)
   const [expandedCategoryId, setExpandedCategoryId] = useState<string | null>(null)
+  const [isFullscreen, setIsFullscreen] = useState(false)
   const containerRef = useRef<HTMLDivElement | null>(null)
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      wrapperRef.current?.requestFullscreen().catch((err) => {
+        console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+      })
+    } else {
+      document.exitFullscreen()
+    }
+  }
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement)
+    }
+    document.addEventListener("fullscreenchange", handleFullscreenChange)
+    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange)
+  }, [])
 
   function cleanTitle(title: string) {
     if (!title) return "";
@@ -80,7 +100,7 @@ export function Mindmap() {
   }
 
   return (
-    <section id="mindmap" className="relative py-20 bg-black overflow-hidden min-h-screen flex flex-col justify-center font-mono">
+    <section ref={wrapperRef} id="mindmap" className="relative py-20 bg-black overflow-hidden min-h-screen flex flex-col justify-center font-mono">
       <div className="absolute inset-0 opacity-20 pointer-events-none" 
            style={{ backgroundImage: 'linear-gradient(#1a1a1a 1px, transparent 1px), linear-gradient(90deg, #1a1a1a 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
       
@@ -105,10 +125,19 @@ export function Mindmap() {
         </div>
 
         <div className="relative h-[800px] w-full border-[3px] border-cyan-900/50 bg-black/40 backdrop-blur-sm overflow-hidden group shadow-[inset_0_0_100px_rgba(0,0,0,0.8)]">
+          {/* Corner accents */}
           <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-cyan-500" />
           <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-cyan-500" />
           <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-[#ff00ff]" />
           <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-[#ff00ff]" />
+
+          {/* Fullscreen Toggle */}
+          <button 
+            onClick={toggleFullscreen}
+            className="absolute top-6 right-6 z-50 p-2 border border-cyan-500/30 bg-black/60 text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400 transition-all"
+          >
+            {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
+          </button>
 
           <div ref={containerRef} className="relative w-full h-full touch-none select-none">
             <svg className="absolute inset-0 w-full h-full pointer-events-none">
@@ -125,10 +154,9 @@ export function Mindmap() {
                       <animate attributeName="stroke-dashoffset" from="100" to="0" dur="5s" repeatCount="indefinite" />
                     </path>
                     {expandedCategoryId === node.id && node.posts && node.posts.slice(0, 6).map((post: any, i: number) => {
-                      const subAngle = node.angle - 45 + (i * (90 / Math.min(node.posts.length, 6)))
-                      const subRad = (subAngle * Math.PI) / 180
-                      const subX = Math.cos(subRad) * (radius + 150)
-                      const subY = Math.sin(subRad) * (radius + 150)
+                      const subX = isFullscreen ? 550 : 420;
+                      const subY = -250 + (i * 100);
+                      
                       return (
                         <path
                           key={`subpath-${i}`}
@@ -192,11 +220,9 @@ export function Mindmap() {
                       </motion.button>
                     </motion.div>
                     {expandedCategoryId === node.id && node.posts && node.posts.slice(0, 6).map((post: any, i: number) => {
-                      const subAngle = node.angle - 45 + (i * (90 / Math.min(node.posts.length, 6)))
-                      const subRad = (subAngle * Math.PI) / 180
-                      const subX = Math.cos(subRad) * (radius + 150)
-                      const subY = Math.sin(subRad) * (radius + 150)
-                      const subSize = 100
+                      const subX = isFullscreen ? 550 : 420;
+                      const subY = -250 + (i * 100);
+                      const subSize = 110
                       return (
                         <motion.div
                           key={`post-${i}`}
