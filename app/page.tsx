@@ -9,8 +9,8 @@ export default function Home() {
     <main className="min-h-screen bg-background">
       <Header />
       <Mindmap />
-      <HeroSection />
       <AISection />
+      <HeroSection />
       <Footer />
     </main>
   )
