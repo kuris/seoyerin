@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Plus, Maximize2, Minimize2, Zap } from "lucide-react"
 
 const initialNodes = [
-  { id: 1, label: "TOEIC", angle: 200, size: 90, color: "primary" },
-  { id: 2, label: "Language", angle: 260, size: 90, color: "accent" },
-  { id: 3, label: "Comedy", angle: 320, size: 90, color: "primary" },
-  { id: 4, label: "Lab", angle: 20, size: 90, color: "accent" },
+  { id: 1, label: "멋진 신세계 2화", angle: 200, size: 100, color: "primary", href: "https://chatgpts.kr/entry/%EB%93%9C%EB%9D%BC%EB%A7%88-%E3%80%8E%EB%A9%8B%EC%A7%84-%EC%8B%A0%EC%84%B8%EA%B3%84%E3%80%8F-2%ED%99%94-%EC%A1%B0%EC%84%A0-%EC%95%85%EB%85%80%EA%B0%80-%EC%A7%81%EC%A0%91-%EC%93%B0%EB%8A%94-%EC%9A%B4%EB%AA%85-%EC%82%AC%EC%9A%A9%EC%84%A4%EB%AA%... " },
+  { id: 2, label: "K-Slang Day 1", angle: 260, size: 100, color: "accent", href: "https://chatgpts.kr/entry/K-Slang-Day-1-%ED%95%9C%EA%B8%80%EC%9D%B8-%EB%93%AF-%EC%98%81%EC%96%B4%EC%9D%B8-%EB%93%AF-%EB%87%8C%EC%97%90-%EB%B0%95%ED%9E%88%EB%8A%94-%EB%B3%91%EB%A7%9B-%ED%95%9C%EA%B5%AD%EC%96%B4-%EA%B0%9C%EC%9D%B4%EB%93%9D-%EB%85%B8%EB%8B%B5-%EB%A9%98%EB%B6%95-%EB%93%B1" },
+  { id: 3, label: "Classic ZOZIGI #1", angle: 320, size: 100, color: "primary", href: "https://chatgpts.kr/entry/Classic-ZOZIGI-01%EB%B9%84%EB%8F%84-%EC%98%A4%EB%8A%94%EB%8D%B0-%EC%98%A4%EB%8A%98-%EB%AC%B8%EC%9E%A5-%ED%95%9C-%EC%A4%84%EC%97%90%EA%B0%90%EC%84%B1-%EC%A2%80-%EC%84%9E%EC%96%B4%EB%B3%BC%EA%B9%8C" },
+  { id: 4, label: "병맛토익 Day 1", angle: 20, size: 100, color: "accent", href: "https://chatgpts.kr/entry/Day1-%EB%B3%91%EB%A7%9B%ED%86%A0%EC%9D%B5-%EC%96%B4%ED%94%8C%EB%A1%9C-%EC%A7%80%EC%9B%90Apply%ED%96%88%EB%8B%A4%EA%B0%80-%EC%9B%94%EA%B8%89%EC%9C%BC%EB%A1%9C-%EC%83%90%EB%9F%AC%EB%A6%ACSalary-%EB%B0%9B%EC%9D%80-%EC%8D%B0txt" },
 ]
 
 export function Mindmap() {
@@ -22,11 +22,15 @@ export function Mindmap() {
 
   function addNode() {
     const id = Date.now()
-    const labels = ["Insight", "New Idea", "Project", "Archive", "Secret"]
-    const label = labels[Math.floor(Math.random() * labels.length)]
+    const pool = [
+      { label: "봄날의 영어", href: "https://chatgpts.kr/entry/%EB%B4%84%EB%82%A0-%EB%8B%B9%EC%8B%A0%EC%9D%98-%EC%98%81%EC%96%B4%EB%A5%BC-%EA%BD%83%ED%94%BC%EC%9A%B8-%EC%8B%9C%EA%B0%84-%F0%9F%8C%B8" },
+      { label: "전략적 결정", href: "https://chatgpts.kr/entry/div-stylemax-width850px-margin0-auto-font-familyNoto-Sans-KR-sans-serifh1-stylefont-size36px-color333-text-aligncenter-margin-bottom40px-line-height14%EC%95%BC-%EC%98%A4%EB%8A%98-%EC%98%A4%ED%9B%84-%EB%84%88-%ED%98%B9%EC%8B%9C%E2%80%A6-%EB%82%98%EB%9E%91-%EC%98%81%EC%96%B4-%EB%AC%B8%EC%9E%A5-%ED%95%98%EB%82%98-%EC%A1%B0%EC%A0%B8%EB%B3%BC-%..." }
+    ]
+    const item = pool[Math.floor(Math.random() * pool.length)]
     const newNode = {
       id,
-      label: `${label} #${nodes.length + 1}`,
+      label: item.label,
+      href: item.href,
       angle: Math.random() * 360,
       size: 80,
       color: Math.random() > 0.5 ? "primary" : "accent",
@@ -161,22 +165,25 @@ export function Mindmap() {
                       marginTop: -node.size / 2,
                     }}
                   >
-                    <div className="relative group cursor-grab active:cursor-grabbing">
+                    <div className="relative group">
                       {/* Node Body */}
-                      <motion.div 
+                      <motion.a
+                        href={node.href || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         animate={{ 
                           borderWidth: [2, 4, 2],
                           borderColor: node.color === "primary" ? ["rgba(var(--primary-rgb), 0.4)", "rgba(var(--primary-rgb), 0.8)", "rgba(var(--primary-rgb), 0.4)"] : ["rgba(var(--accent-rgb), 0.4)", "rgba(var(--accent-rgb), 0.8)", "rgba(var(--accent-rgb), 0.4)"]
                         }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                        className={`flex flex-col items-center justify-center rounded-full shadow-2xl backdrop-blur-xl transition-all duration-500 overflow-hidden ${
+                        className={`flex flex-col items-center justify-center rounded-full shadow-2xl backdrop-blur-xl transition-all duration-500 overflow-hidden cursor-pointer ${
                           node.color === "primary" 
-                            ? "bg-primary/10 text-primary" 
-                            : "bg-accent/10 text-accent"
+                            ? "bg-primary/10 text-primary hover:bg-primary/20" 
+                            : "bg-accent/10 text-accent hover:bg-accent/20"
                         }`}
                         style={{ width: node.size, height: node.size }}
                       >
-                        <span className="font-bold text-sm text-center px-2 leading-tight">{node.label}</span>
+                        <span className="font-bold text-[10px] sm:text-xs text-center px-2 leading-tight">{node.label}</span>
                         {/* Internal "Current" animation */}
                         <motion.div 
                           animate={{ 
@@ -186,18 +193,18 @@ export function Mindmap() {
                           transition={{ duration: 2, repeat: Infinity }}
                           className="absolute inset-0 bg-current opacity-5 pointer-events-none rounded-full"
                         />
-                      </motion.div>
+                      </motion.a>
 
                       {/* Resize Controls (Visible on hover) */}
                       <div className="absolute -top-2 -right-10 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-50">
                         <button 
-                          onClick={(e) => { e.stopPropagation(); updateNode(node.id, { size: Math.min(node.size + 10, 150) }) }}
+                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateNode(node.id, { size: Math.min(node.size + 10, 150) }) }}
                           className="p-1.5 bg-background/80 border border-border rounded-full hover:bg-primary/20 hover:text-primary transition-colors shadow-lg"
                         >
                           <Maximize2 className="w-3.5 h-3.5" />
                         </button>
                         <button 
-                          onClick={(e) => { e.stopPropagation(); updateNode(node.id, { size: Math.max(node.size - 10, 60) }) }}
+                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateNode(node.id, { size: Math.max(node.size - 10, 60) }) }}
                           className="p-1.5 bg-background/80 border border-border rounded-full hover:bg-accent/20 hover:text-accent transition-colors shadow-lg"
                         >
                           <Minimize2 className="w-3.5 h-3.5" />
