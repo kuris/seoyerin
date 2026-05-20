@@ -10,6 +10,25 @@ export function Mindmap() {
   const [expandedCategoryId, setExpandedCategoryId] = useState<string | null>(null)
   const containerRef = useRef<HTMLDivElement | null>(null)
 
+  function cleanTitle(title: string) {
+    if (!title) return "";
+    // 1. Remove HTML entities
+    let cleaned = title.replace(/&[a-z0-9#]+;/gi, ' ');
+    // 2. Remove Hashtags (anything starting with # followed by non-whitespace)
+    cleaned = cleaned.replace(/#[^\s#]+/g, '');
+    // 3. Trim extra spaces and normalize
+    cleaned = cleaned.replace(/\s+/g, ' ').trim();
+    
+    // 4. If empty after cleaning (common if post is all hashtags), use a fallback
+    if (!cleaned || cleaned.length < 2) {
+      // Try to take the first hashtag as a title if everything else is gone
+      const firstTag = title.match(/#([^\s#]+)/);
+      return firstTag ? firstTag[1].substring(0, 20) : "Untitled Content";
+    }
+    
+    return cleaned.length > 25 ? cleaned.substring(0, 25) + '...' : cleaned;
+  }
+
   useEffect(() => {
     async function fetchRSS() {
       try {
@@ -20,7 +39,7 @@ export function Mindmap() {
           const categoryNodes = categories.map((cat: any, index: number) => ({
             id: `cat-${cat}`,
             type: 'category',
-            label: cat,
+            label: cleanTitle(cat),
             angle: (index * (360 / categories.length)),
             size: 110,
             color: index % 2 === 0 ? "primary" : "accent",
@@ -51,18 +70,6 @@ export function Mindmap() {
     const newAngle = (Math.atan2(dy, dx) * 180) / Math.PI
     const normAngle = ((newAngle % 360) + 360) % 360
     setNodes((prev) => prev.map((n) => (n.id === nodeId ? { ...n, angle: Math.round(normAngle) } : n)))
-  }
-
-  function cleanTitle(title: string) {
-    // 1. Remove HTML entities
-    let cleaned = title.replace(/&[a-z0-9#]+;/gi, ' ');
-    // 2. Remove Hashtags (anything starting with # until a space)
-    cleaned = cleaned.replace(/#[^\s]+/g, '');
-    // 3. Trim extra spaces
-    cleaned = cleaned.trim();
-    // 4. If empty after cleaning (rare), return original but truncated
-    if (!cleaned) return title.substring(0, 20) + '...';
-    return cleaned.length > 25 ? cleaned.substring(0, 25) + '...' : cleaned;
   }
 
   return (
