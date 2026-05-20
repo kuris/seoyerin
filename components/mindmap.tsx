@@ -49,15 +49,22 @@ export function Mindmap() {
         const data = await response.json()
         if (Array.isArray(data) && data.length > 0) {
           const categories = Array.from(new Set(data.map((item: any) => item.category)))
-          const categoryNodes = categories.map((cat: any, index: number) => ({
-            id: `cat-${cat}`,
-            type: 'category',
-            label: cleanTitle(cat),
-            angle: (index * (360 / categories.length)),
-            size: 120,
-            color: index % 2 === 0 ? "#00f3ff" : "#ff00ff",
-            posts: data.filter((p: any) => p.category === cat)
-          }))
+          const categoryNodes = categories.map((cat: any, index: number) => {
+            const postsInCategory = data.filter((p: any) => p.category === cat);
+            const postCount = postsInCategory.length;
+            // Base size 100px, add 5px per post, max 160px
+            const dynamicSize = Math.min(100 + (postCount * 5), 160);
+            
+            return {
+              id: `cat-${cat}`,
+              type: 'category',
+              label: cleanTitle(cat),
+              angle: (index * (360 / categories.length)),
+              size: dynamicSize,
+              color: index % 2 === 0 ? "#00f3ff" : "#ff00ff",
+              posts: postsInCategory
+            };
+          })
           setNodes(categoryNodes)
         }
       } catch (err) {
