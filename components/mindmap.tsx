@@ -83,13 +83,32 @@ export function Mindmap() {
                   <input
                     type="range"
                     min={50}
-                    max={300}
+                    import React, { useState, useRef } from "react"
                     value={radius}
                     onChange={(e) => setRadius(Number(e.target.value))}
                     className="w-full mt-2"
                   />
                 </div>
+                      const containerRef = useRef<HTMLDivElement | null>(null)
 
+                      function handleDragEnd(e: any, info: any, nodeId: number) {
+                        const rect = containerRef.current?.getBoundingClientRect()
+                        if (!rect) return
+
+                        const centerX = rect.left + rect.width / 2
+                        const centerY = rect.top + rect.height / 2
+
+                        const dx = info.point.x - centerX
+                        const dy = info.point.y - centerY
+
+                        const newAngle = (Math.atan2(dy, dx) * 180) / Math.PI
+                        const normAngle = ((newAngle % 360) + 360) % 360
+                        const newRadius = Math.round(Math.sqrt(dx * dx + dy * dy))
+
+                        updateNode(nodeId, { angle: Math.round(normAngle) })
+                        // update global radius to match user's rearrangement, clamped
+                        setRadius(Math.min(Math.max(newRadius, 50), 300))
+                      }
                 <div>
                   <label className="text-sm text-muted-foreground">Select node to edit size / angle</label>
                   <div className="mt-2 grid grid-cols-4 gap-2">
