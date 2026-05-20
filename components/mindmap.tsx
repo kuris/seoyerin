@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Activity, Cpu, Maximize, Minimize, LayoutGrid, Network, Layers } from "lucide-react"
+import { playSound } from "../lib/sound"
 
 type ViewMode = "CYBER" | "TRADITIONAL" | "CLASSIC";
 
@@ -74,6 +75,7 @@ export function Mindmap() {
             };
           })
           setNodes(categoryNodes)
+          playSound('expand');
         }
       } catch (err) {
         console.error("Failed RSS fetch:", err)
@@ -84,7 +86,13 @@ export function Mindmap() {
 
   function handleNodeClick(node: any) {
     if (node.type === 'category') {
-      setExpandedCategoryId((prev: any) => prev === node.id ? null : node.id)
+      setExpandedCategoryId((prev: any) => {
+        const isExpanding = prev !== node.id;
+        playSound(isExpanding ? 'expand' : 'click');
+        return isExpanding ? node.id : null;
+      });
+    } else {
+      playSound('click');
     }
   }
 
