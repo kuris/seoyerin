@@ -22,15 +22,17 @@ export async function GET() {
       const content = match[1];
       const titleMatch = content.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/) || content.match(/<title>(.*?)<\/title>/);
       const linkMatch = content.match(/<link>(.*?)<\/link>/);
+      const categoryMatch = content.match(/<category><!\[CDATA\[(.*?)\]\]><\/category>/) || content.match(/<category>(.*?)<\/category>/);
       
       if (titleMatch && linkMatch) {
         items.push({
           title: titleMatch[1],
-          link: linkMatch[1]
+          link: linkMatch[1],
+          category: categoryMatch ? categoryMatch[1] : '기타'
         });
       }
       
-      if (items.length >= 20) break; // Limit to latest 20 posts
+      if (items.length >= 50) break; // Increased to 50 for better category coverage
     }
     
     return NextResponse.json(items);
