@@ -120,7 +120,7 @@ export function Mindmap() {
             {isMobile ? 'VIEW_ONLY_MODE' : 'LIVE_FEED_ESTABLISHED'}
           </div>
           <h2 className="text-3xl md:text-7xl font-black text-white leading-tight tracking-tighter">
-            <span className="text-cyan-400 drop-shadow-[0_0_10px_rgba(0,243,255,0.8)]">CYBER</span>_CORE
+            <span className="text-cyan-400 drop-shadow-[0_0_10px_rgba(0,243,255,0.8)]">SEO YERIN'S</span> SECRET LAB
           </h2>
           <p className="text-gray-500 mt-2 md:mt-4 max-w-xl mx-auto text-[10px] md:text-xs uppercase tracking-widest leading-relaxed px-4">
             {isMobile ? 'Mobile interface active. Tap nodes.' : 'Interfacing decentralized data nodes. Drag to reroute.'}
