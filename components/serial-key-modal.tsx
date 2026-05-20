@@ -118,7 +118,7 @@ export function SerialKeyModal({ isOpen, onClose }: SerialKeyModalProps) {
 
             {/* CTA */}
             <motion.a
-              href="https://postype.com"
+              href="https://www.postype.com/@yasulfactory"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.02 }}

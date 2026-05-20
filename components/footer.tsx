@@ -11,7 +11,7 @@ const socialLinks = [
   },
   {
     name: "Postype",
-    href: "https://postype.com",
+    href: "https://www.postype.com/@yasulfactory",
     description: "Premium Content",
   },
   {
