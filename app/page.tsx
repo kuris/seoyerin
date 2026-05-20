@@ -1,7 +1,7 @@
 import { Header } from "@/components/header"
 import { HeroSection } from "@/components/hero-section"
 import { AISection } from "@/components/ai-section"
-import { ContentGrid } from "@/components/content-grid"
+import { Mindmap } from "@/components/mindmap"
 import { Footer } from "@/components/footer"
 
 export default function Home() {
@@ -10,7 +10,7 @@ export default function Home() {
       <Header />
       <HeroSection />
       <AISection />
-      <ContentGrid />
+      <Mindmap />
       <Footer />
     </main>
   )
