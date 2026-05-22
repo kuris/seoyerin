@@ -7,6 +7,8 @@ body {
   position: relative;
   letter-spacing: 0.5px;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body::before {
@@ -66,8 +68,8 @@ body::before {
   text-transform: uppercase;
   position: relative;
   display: inline-block;
-  text-shadow: 1px 1px 0 #222, 0 0 8px #b2ffb2;
-  letter-spacing: 2px;
+  text-shadow: 1px 1px 0 #000;
+  letter-spacing: 1px;
 }
 
 .status-bar {

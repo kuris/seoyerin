@@ -5,21 +5,26 @@ import { useState } from "react"
 
 
 // 타자기 타이핑 효과
-function useTypewriter(text: string, speed = 60) {
+function useTypewriter(text: string, speed = 50) {
   const [displayed, setDisplayed] = useState("");
+  
   useEffect(() => {
     let i = 0;
+    let timeoutId: NodeJS.Timeout;
     setDisplayed("");
+    
     function type() {
       if (i < text.length) {
-        setDisplayed((prev) => prev + text.charAt(i));
+        setDisplayed(text.slice(0, i + 1));
         i++;
-        setTimeout(type, speed + Math.random() * 40);
+        timeoutId = setTimeout(type, speed + Math.random() * 30);
       }
     }
+    
     type();
-    // eslint-disable-next-line
-  }, [text]);
+    return () => clearTimeout(timeoutId);
+  }, [text, speed]);
+  
   return displayed;
 }
 
