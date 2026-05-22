@@ -41,13 +41,18 @@ interface Post {
 }
 
 export default function Home() {
-  const [view, setView] = useState<"intro" | "list" | "mindmap">("intro");
+  const [view, setView] = useState<"boot" | "intro" | "list" | "mindmap">("boot");
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const title = useTypewriter("나는 세 번 죽고 세 번 태어났다", 80);
-  const desc = useTypewriter("어느 15년차 PM의 끈질긴 생존 기록. 세 번의 죽음과 세 번의 부활, 그리고 끝나지 않는 Healthcare IT 실험실에 오신 것을 환영합니다.", 40);
+  const title = useTypewriter(view === "boot" ? "" : "나는 세 번 죽고 세 번 태어났다", 80);
+  const desc = useTypewriter(view === "boot" ? "" : "어느 15년차 PM의 끈질긴 생존 기록. 세 번의 죽음과 세 번의 부활, 그리고 끝나지 않는 Healthcare IT 실험실에 오신 것을 환영합니다.", 40);
+
+  const handleBoot = () => {
+    playSound('mechanical');
+    setView("intro");
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -81,6 +86,23 @@ export default function Home() {
 
   return (
     <main className="min-h-screen flex items-center justify-center p-4">
+      {view === "boot" && (
+        <div 
+          onClick={handleBoot}
+          className="cursor-pointer group flex flex-col items-center justify-center space-y-6"
+        >
+          <div className="w-16 h-16 border border-[#6ab06a] flex items-center justify-center animate-spin-slow group-hover:bg-[#6ab06a]/20 transition-colors">
+            <div className="w-8 h-8 bg-[#6ab06a]"></div>
+          </div>
+          <div className="text-[#a0e080] font-bold tracking-[6px] animate-pulse">
+            CLICK TO INITIALIZE SYSTEM
+          </div>
+          <div className="text-[10px] text-[#5a6a4a] uppercase tracking-widest">
+            Audio Interface Ready
+          </div>
+        </div>
+      )}
+
       {view === "intro" && (
         <section className="retro-container !m-0 !max-w-[640px]">
           <div className="status-bar">
