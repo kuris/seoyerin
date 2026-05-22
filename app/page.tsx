@@ -21,6 +21,8 @@ function CustomCursor() {
 }
 
 // 타자기 타이핑 효과
+
+// 타자기 타이핑 효과
 function useTypewriter(text: string, speed = 50, trigger = true) {
   const [displayed, setDisplayed] = useState("");
   
@@ -120,9 +122,9 @@ export default function Home() {
             </div>
             <div className="space-y-4">
               <div className="text-[0.75rem] text-[#5a6a4a] font-mono leading-relaxed">
-                > CONNECTING TO SERVER... OK<br />
-                > DECRYPTING LOG FILE... OK<br />
-                > TARGET: {retrievingPost.link.substring(0, 30)}...
+                &gt; CONNECTING TO SERVER... OK<br />
+                &gt; DECRYPTING LOG FILE... OK<br />
+                &gt; TARGET: {retrievingPost.link.substring(0, 30)}...
               </div>
               <h2 className="text-[1.2rem] font-bold text-[#a0e080] border-l-2 border-[#a0e080] pl-4 py-2">
                 {retrievingPost.title}
@@ -303,75 +305,6 @@ export default function Home() {
           </div>
           <PinballGame />
           <div className="mt-4 flex justify-between items-center text-[10px] text-[#5a6a4a] uppercase tracking-widest text-center">
-            <span>Controls: Mouse/Touch (Left/Right) or Arrow Keys</span>
-            <span>Status: Operational</span>
-          </div>
-        </section>
-      )}
-    </main>
-  );
-}
-                    {/* Connecting Vertical Line */}
-                    <div className="absolute left-[3px] top-4 bottom-4 w-[1px] bg-[#1a2a1a]"></div>
-
-                    {/* Post Nodes */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4">
-                      {catPosts.map((post, pIdx) => (
-                        <div key={pIdx} className="relative group">
-                          {/* Horizontal Branch Line */}
-                          <div className="absolute -left-4 top-1/2 w-4 h-[1px] bg-[#1a2a1a]"></div>
-                          
-                          <button 
-                            onClick={() => handleOpenLog(post)}
-                            className="w-full text-left block p-4 border border-[#1a2a1a] bg-[#0d120d] hover:border-[#4a8a4a] hover:bg-[#122012] transition-all duration-300"
-                          >
-                            <div className="text-[0.9rem] leading-relaxed text-[#c0c8a8] group-hover:text-[#a0e080]">
-                              {post.title}
-                            </div>
-                            <div className="mt-3 text-[10px] text-[#5a6a4a] flex justify-between uppercase tracking-wider">
-                              <span>Ref: {Math.random().toString(36).slice(2, 7)}</span>
-                              <span className="group-hover:text-[#6ab06a]">▸ OPEN_LOG</span>
-                            </div>
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          
-          <div className="mt-8 flex gap-3 border-t border-[#1a2a1a] pt-6">
-            <button 
-              onClick={() => { playSound('click'); setView("pinball"); }} 
-              className="retro-link !text-[11px] !py-2"
-            >
-              ▸  실험 프로젝트 기동
-            </button>
-            <button 
-              onClick={() => { playSound('click'); setView("intro"); }} 
-              className="retro-link !text-[11px] !py-2"
-            >
-              ▸  중앙 시스템으로
-            </button>
-          </div>
-        </section>
-      )}
-
-      {view === "pinball" && (
-        <section className="retro-container !m-0 !max-w-[800px] w-full flex flex-col">
-          <div className="status-bar">
-            <span>EXPERIMENTAL_PROJECT: PINBALL_V1.0</span>
-            <button 
-              onClick={() => { playSound('click'); setView("intro"); }} 
-              className="hover:text-white transition-colors"
-            >
-              [ SHUTDOWN ]
-            </button>
-          </div>
-          <PinballGame />
-          <div className="mt-4 flex justify-between items-center text-[10px] text-[#5a6a4a] uppercase tracking-widest">
             <span>Controls: Mouse/Touch (Left/Right) or Arrow Keys</span>
             <span>Status: Operational</span>
           </div>
