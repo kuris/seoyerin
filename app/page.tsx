@@ -46,8 +46,8 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const title = useTypewriter("SEO YERIN'S SECRET BOARD", 70);
-  const desc = useTypewriter("차분한 타자기 감성의 실험실 게시판입니다. 자유롭게 글을 남기거나, 실험실의 다양한 기능을 탐험해보세요.", 35);
+  const title = useTypewriter("나는 세 번 죽고 세 번 태어났다", 80);
+  const desc = useTypewriter("어느 15년차 PM의 끈질긴 생존 기록. 세 번의 죽음과 세 번의 부활, 그리고 끝나지 않는 Healthcare IT 실험실에 오신 것을 환영합니다.", 40);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -82,28 +82,28 @@ export default function Home() {
   return (
     <main className="min-h-screen flex items-center justify-center p-4">
       {view === "intro" && (
-        <section className="retro-container !m-0 !max-w-[540px]">
+        <section className="retro-container !m-0 !max-w-[640px]">
           <div className="status-bar">
-            <span>BOARD: LAB-NOTE</span>
-            <span>USER: GUEST</span>
-            <span>ACCESS: OPEN</span>
+            <span>DATABASE: LOG_SURVIVAL</span>
+            <span>USER: SEO YERIN</span>
+            <span>ACCESS: GRANTED</span>
           </div>
-          <h1 className="glitch-text mb-4">{title}</h1>
-          <div className="retro-desc mb-6">
+          <h1 className="glitch-text">{title}</h1>
+          <div className="retro-desc">
             {desc}
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             <button 
               onClick={() => { playSound('click'); setView("list"); }} 
               className="retro-link"
             >
-              [ 게시글 목록 ]
+              ▸  데이터 기록 보기
             </button>
             <button 
               onClick={() => { playSound('click'); setView("mindmap"); }} 
               className="retro-link"
             >
-              [ 마인드맵 뷰 ]
+              ▸  마인드맵 시스템
             </button>
             <a 
               href="https://chatgpts.kr" 
@@ -112,8 +112,20 @@ export default function Home() {
               className="retro-link"
               onClick={() => playSound('click')}
             >
-              [ 새 글 작성 ]
+              ▸  새로운 기록 작성
             </a>
+          </div>
+          
+          <div className="mt-12 pt-6 border-t border-[#1a2a1a]">
+            <div className="text-[10px] text-[#2a3a2a] tracking-[3px] mb-4 uppercase">Survival Log Status</div>
+            <div className="flex flex-wrap gap-4">
+              {[2002, 2004, 2005, 2008, 2025].map(year => (
+                <div key={year} className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-[#4a7a4a]"></div>
+                  <span className="text-[11px] text-[#5a6a4a]">{year}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       )}
@@ -121,34 +133,31 @@ export default function Home() {
       {view === "list" && (
         <section className="retro-container !m-0 !max-w-[850px] w-full max-h-[85vh] flex flex-col">
           <div className="status-bar">
-            <span>BOARD: STRUCTURED_DATABASE</span>
-            <span>NODES: {posts.length}</span>
+            <span>DATABASE: STRUCTURED_NODES</span>
+            <span>RECORDS: {posts.length}</span>
             <button 
               onClick={() => { playSound('click'); setView("intro"); }} 
-              className="text-[#b2ffb2] hover:underline"
+              className="hover:text-white transition-colors"
             >
-              [ 뒤로가기 ]
+              [ ESC_BACK ]
             </button>
           </div>
           
           <div className="overflow-y-auto pr-4 custom-scrollbar flex-1 py-2">
             {loading ? (
-              <div className="h-full flex flex-col items-center justify-center p-10 space-y-4">
-                <div className="text-[1.2rem] font-bold animate-pulse tracking-widest">
-                  SYNCHRONIZING_DATABASE... {progress}%
+              <div className="h-full flex flex-col items-center justify-center p-10 space-y-6">
+                <div className="text-[1.1rem] font-bold tracking-[4px] text-[#a0e080]">
+                  SYNCHRONIZING... {progress}%
                 </div>
-                <div className="w-full max-w-md h-4 border border-[#b2ffb2]/50 p-[2px]">
+                <div className="w-full max-w-sm h-1 bg-[#1a2a1a]">
                   <div 
-                    className="h-full bg-[#b2ffb2] transition-all duration-300 shadow-[0_0_10px_#b2ffb2]"
+                    className="h-full bg-[#6ab06a] transition-all duration-300 shadow-[0_0_10px_rgba(106,176,106,0.3)]"
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>
-                <div className="text-[0.7rem] opacity-50 font-mono">
-                  FETCHING FROM: HTTPS://CHATGUTS.KR/RSS
-                </div>
               </div>
             ) : (
-              <div className="space-y-8">
+              <div className="space-y-10">
                 {Object.entries(
                   posts.reduce((acc, post) => {
                     if (!acc[post.category]) acc[post.category] = [];
@@ -158,36 +167,36 @@ export default function Home() {
                 ).map(([category, catPosts], cIdx) => (
                   <div key={category} className="relative pl-6">
                     {/* Category Node */}
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-4 h-4 border border-[#b2ffb2] rotate-45 flex-shrink-0 bg-[#b2ffb2]/20"></div>
-                      <h2 className="text-[1.1rem] font-bold text-[#b2ffb2] tracking-wider uppercase">
-                        {category} <span className="text-[0.7rem] opacity-50 ml-2">[{catPosts.length}_ITEMS]</span>
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-2 h-2 bg-[#6ab06a] rotate-45 flex-shrink-0"></div>
+                      <h2 className="text-[1rem] font-bold text-[#a0e080] tracking-[2px] uppercase">
+                        {category} <span className="text-[10px] text-[#5a6a4a] ml-2">({catPosts.length})</span>
                       </h2>
-                      <div className="flex-1 h-[1px] bg-gradient-to-r from-[#b2ffb2]/50 to-transparent"></div>
+                      <div className="flex-1 h-[1px] bg-[#1a2a1a]"></div>
                     </div>
                     
                     {/* Connecting Vertical Line */}
-                    <div className="absolute left-[7px] top-6 bottom-4 w-[1px] bg-[#b2ffb2]/30"></div>
+                    <div className="absolute left-[3px] top-4 bottom-4 w-[1px] bg-[#1a2a1a]"></div>
 
                     {/* Post Nodes */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pl-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4">
                       {catPosts.map((post, pIdx) => (
                         <div key={pIdx} className="relative group">
                           {/* Horizontal Branch Line */}
-                          <div className="absolute -left-4 top-1/2 w-4 h-[1px] bg-[#b2ffb2]/30"></div>
+                          <div className="absolute -left-4 top-1/2 w-4 h-[1px] bg-[#1a2a1a]"></div>
                           
                           <a 
                             href={post.link} 
                             target="_blank" 
                             rel="noreferrer"
-                            className="block p-3 border border-[#b2ffb2]/20 bg-[#b2ffb2]/5 hover:bg-[#b2ffb2]/20 hover:border-[#b2ffb2]/60 transition-all duration-200 group-hover:translate-x-1"
+                            className="block p-4 border border-[#1a2a1a] bg-[#0d120d] hover:border-[#4a8a4a] hover:bg-[#122012] transition-all duration-300"
                           >
-                            <div className="text-[0.85rem] leading-snug line-clamp-2">
+                            <div className="text-[0.9rem] leading-relaxed text-[#c0c8a8] group-hover:text-[#a0e080]">
                               {post.title}
                             </div>
-                            <div className="mt-2 text-[0.65rem] opacity-40 flex justify-between uppercase">
-                              <span>ID: {Math.random().toString(16).slice(2, 8)}</span>
-                              <span>LINK_READY</span>
+                            <div className="mt-3 text-[10px] text-[#5a6a4a] flex justify-between uppercase tracking-wider">
+                              <span>Ref: {Math.random().toString(36).slice(2, 7)}</span>
+                              <span className="group-hover:text-[#6ab06a]">▸ OPEN_LOG</span>
                             </div>
                           </a>
                         </div>
@@ -199,18 +208,18 @@ export default function Home() {
             )}
           </div>
           
-          <div className="mt-6 flex gap-2 border-t border-[#b2ffb2]/20 pt-4">
+          <div className="mt-8 flex gap-3 border-t border-[#1a2a1a] pt-6">
             <button 
               onClick={() => { playSound('click'); setView("mindmap"); }} 
-              className="retro-link !text-[0.75rem]"
+              className="retro-link !text-[11px] !py-2"
             >
-              [ 인터랙티브 마인드맵 ]
+              ▸  전체 마인드맵 가동
             </button>
             <button 
               onClick={() => { playSound('click'); setView("intro"); }} 
-              className="retro-link !text-[0.75rem]"
+              className="retro-link !text-[11px] !py-2"
             >
-              [ 루트 시스템 ]
+              ▸  중앙 시스템으로
             </button>
           </div>
         </section>
