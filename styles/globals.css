@@ -25,6 +25,51 @@ body {
   line-height: 1.8;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  cursor: none; /* 커스텀 십자선을 위해 기본 커서 숨김 */
+}
+
+/* 그리드 배경 효과 */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(26, 42, 26, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 42, 26, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 네온 십자선 커서 */
+.cursor-crosshair-custom {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(160, 224, 128, 0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  transition: width 0.2s, height 0.2s;
+}
+
+.cursor-crosshair-custom::before,
+.cursor-crosshair-custom::after {
+  content: "";
+  position: absolute;
+  background: var(--bright);
+  box-shadow: 0 0 5px var(--bright);
+}
+
+.cursor-crosshair-custom::before {
+  top: 50%; left: -10px; width: 40px; height: 1px;
+  transform: translateY(-50%);
+}
+
+.cursor-crosshair-custom::after {
+  left: 50%; top: -10px; width: 1px; height: 40px;
+  transform: translateX(-50%);
 }
 
 body::before {
@@ -38,6 +83,17 @@ body::before {
   animation: scanline 12s linear infinite;
   pointer-events: none;
   z-index: 9999;
+}
+
+@keyframes blink-green {
+  0%, 100% { opacity: 1; filter: brightness(1.2) drop-shadow(0 0 2px var(--green)); }
+  50% { opacity: 0.4; filter: brightness(0.8); }
+}
+
+.animate-sync-complete {
+  animation: blink-green 2s ease-in-out infinite;
+  color: var(--green);
+  font-weight: bold;
 }
 
 .retro-container {
@@ -124,6 +180,64 @@ body::before {
   padding-left: 18px;
   margin: 20px 0 30px;
   font-style: normal;
+}
+
+/* Crosshair Effect */
+.crosshair {
+  position: fixed;
+  pointer-events: none;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(106, 176, 106, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  transition: width 0.3s, height 0.3s, border-color 0.3s;
+}
+
+.crosshair::before,
+.crosshair::after {
+  content: "";
+  position: absolute;
+  background: var(--green);
+  opacity: 0.5;
+}
+
+.crosshair::before {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+}
+
+.crosshair::after {
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 100%;
+}
+
+/* Blinking Sync Light */
+@keyframes blink-green {
+  0%, 100% { opacity: 1; box-shadow: 0 0 5px var(--green); }
+  50% { opacity: 0.3; box-shadow: none; }
+}
+
+.sync-light {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--green);
+  border-radius: 50%;
+  margin-right: 8px;
+  animation: blink-green 1.5s infinite;
+}
+
+/* Typing Cursor */
+.typing-cursor::after {
+  content: "|";
+  animation: blink 1s infinite;
+  margin-left: 2px;
 }
 
 /* Custom Scrollbar for Retro Board */

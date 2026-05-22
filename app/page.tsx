@@ -1,14 +1,31 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Mindmap } from "@/components/mindmap"
+import { useEffect, useState, useRef } from "react"
+import { PinballGame } from "@/components/pinball-game"
 import { playSound } from "@/lib/sound"
 
+// 커스텀 십자선 커서 컴포넌트
+function CustomCursor() {
+  const [pos, setPos] = useState({ x: 0, y: 0 })
+  useEffect(() => {
+    const handleMove = (e: MouseEvent) => setPos({ x: e.clientX, y: e.clientY })
+    window.addEventListener('mousemove', handleMove)
+    return () => window.removeEventListener('mousemove', handleMove)
+  }, [])
+  return (
+    <div 
+      className="cursor-crosshair-custom hidden md:block" 
+      style={{ left: pos.x, top: pos.y }}
+    />
+  )
+}
+
 // 타자기 타이핑 효과
-function useTypewriter(text: string, speed = 50) {
+function useTypewriter(text: string, speed = 50, trigger = true) {
   const [displayed, setDisplayed] = useState("");
   
   useEffect(() => {
+    if (!trigger) return;
     let i = 0;
     let timeoutId: NodeJS.Timeout;
     setDisplayed("");
@@ -16,12 +33,9 @@ function useTypewriter(text: string, speed = 50) {
     function type() {
       if (i < text.length) {
         setDisplayed(text.slice(0, i + 1));
-        
-        // 글자가 타이핑될 때 소리 재생 (공백 제외)
         if (text.charAt(i) !== ' ') {
           playSound('typewriter');
         }
-        
         i++;
         timeoutId = setTimeout(type, speed + Math.random() * 30);
       }
@@ -29,7 +43,7 @@ function useTypewriter(text: string, speed = 50) {
     
     type();
     return () => clearTimeout(timeoutId);
-  }, [text, speed]);
+  }, [text, speed, trigger]);
   
   return displayed;
 }
@@ -41,10 +55,11 @@ interface Post {
 }
 
 export default function Home() {
-  const [view, setView] = useState<"boot" | "intro" | "list" | "mindmap">("boot");
+  const [view, setView] = useState<"boot" | "intro" | "list" | "pinball">("boot");
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [retrievingPost, setRetrievingPost] = useState<Post | null>(null);
 
   const title = useTypewriter(view === "boot" ? "" : "나는 세 번 죽고 세 번 태어났다", 80);
   const desc = useTypewriter(view === "boot" ? "" : "어느 15년차 PM의 끈질긴 생존 기록. 세 번의 죽음과 세 번의 부활, 그리고 끝나지 않는 Healthcare IT 실험실에 오신 것을 환영합니다.", 40);
@@ -54,12 +69,19 @@ export default function Home() {
     setView("intro");
   };
 
+  const handleOpenLog = (post: Post) => {
+    playSound('mechanical');
+    setRetrievingPost(post);
+    setTimeout(() => {
+      window.open(post.link, '_blank');
+      setRetrievingPost(null);
+    }, 2500);
+  };
+
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
       setProgress(0);
-      
-      // 로딩 퍼센트 시뮬레이션
       const timer = setInterval(() => {
         setProgress((old) => {
           if (old >= 95) return old;
@@ -86,10 +108,37 @@ export default function Home() {
 
   return (
     <main className="min-h-screen flex items-center justify-center p-4">
+      <CustomCursor />
+      
+      {/* 데이터 인출(Retrieve) 오버레이 */}
+      {retrievingPost && (
+        <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-6">
+          <div className="retro-container !m-0 !max-w-[600px] w-full border-[#a0e080]">
+            <div className="status-bar">
+              <span className="animate-pulse">STATUS: RETRIEVING_DATA_LOG...</span>
+              <span>ID: {Math.random().toString(36).slice(2, 9).toUpperCase()}</span>
+            </div>
+            <div className="space-y-4">
+              <div className="text-[0.75rem] text-[#5a6a4a] font-mono leading-relaxed">
+                > CONNECTING TO SERVER... OK<br />
+                > DECRYPTING LOG FILE... OK<br />
+                > TARGET: {retrievingPost.link.substring(0, 30)}...
+              </div>
+              <h2 className="text-[1.2rem] font-bold text-[#a0e080] border-l-2 border-[#a0e080] pl-4 py-2">
+                {retrievingPost.title}
+              </h2>
+              <div className="text-[#6ab06a] text-[0.8rem] animate-pulse">
+                REDIRECTING TO LOG SOURCE...
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {view === "boot" && (
         <div 
           onClick={handleBoot}
-          className="cursor-pointer group flex flex-col items-center justify-center space-y-6"
+          className="cursor-none group flex flex-col items-center justify-center space-y-6"
         >
           <div className="w-16 h-16 border border-[#6ab06a] flex items-center justify-center animate-spin-slow group-hover:bg-[#6ab06a]/20 transition-colors">
             <div className="w-8 h-8 bg-[#6ab06a]"></div>
@@ -97,8 +146,8 @@ export default function Home() {
           <div className="text-[#a0e080] font-bold tracking-[6px] animate-pulse">
             CLICK TO INITIALIZE SYSTEM
           </div>
-          <div className="text-[10px] text-[#5a6a4a] uppercase tracking-widest">
-            Audio Interface Ready
+          <div className="text-[10px] text-[#5a6a4a] uppercase tracking-widest text-center">
+            Audio Interface Ready / Visual Grid Active
           </div>
         </div>
       )}
@@ -122,10 +171,10 @@ export default function Home() {
               ▸  데이터 기록 보기
             </button>
             <button 
-              onClick={() => { playSound('click'); setView("mindmap"); }} 
+              onClick={() => { playSound('click'); setView("pinball"); }} 
               className="retro-link"
             >
-              ▸  마인드맵 시스템
+              ▸  실험 프로젝트 기동
             </button>
             <a 
               href="https://chatgpts.kr" 
@@ -156,7 +205,10 @@ export default function Home() {
         <section className="retro-container !m-0 !max-w-[850px] w-full max-h-[85vh] flex flex-col">
           <div className="status-bar">
             <span>DATABASE: STRUCTURED_NODES</span>
-            <span>RECORDS: {posts.length}</span>
+            <div className="flex items-center gap-2">
+              <span>RECORDS: {posts.length}</span>
+              <span className="animate-sync-complete ml-1 text-[9px] tracking-normal">[SYNC_COMPLETE]</span>
+            </div>
             <button 
               onClick={() => { playSound('click'); setView("intro"); }} 
               className="hover:text-white transition-colors"
@@ -186,9 +238,8 @@ export default function Home() {
                     acc[post.category].push(post);
                     return acc;
                   }, {} as Record<string, Post[]>)
-                ).map(([category, catPosts], cIdx) => (
+                ).map(([category, catPosts]) => (
                   <div key={category} className="relative pl-6">
-                    {/* Category Node */}
                     <div className="flex items-center gap-4 mb-6">
                       <div className="w-2 h-2 bg-[#6ab06a] rotate-45 flex-shrink-0"></div>
                       <h2 className="text-[1rem] font-bold text-[#a0e080] tracking-[2px] uppercase">
@@ -196,22 +247,14 @@ export default function Home() {
                       </h2>
                       <div className="flex-1 h-[1px] bg-[#1a2a1a]"></div>
                     </div>
-                    
-                    {/* Connecting Vertical Line */}
                     <div className="absolute left-[3px] top-4 bottom-4 w-[1px] bg-[#1a2a1a]"></div>
-
-                    {/* Post Nodes */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4">
                       {catPosts.map((post, pIdx) => (
                         <div key={pIdx} className="relative group">
-                          {/* Horizontal Branch Line */}
                           <div className="absolute -left-4 top-1/2 w-4 h-[1px] bg-[#1a2a1a]"></div>
-                          
-                          <a 
-                            href={post.link} 
-                            target="_blank" 
-                            rel="noreferrer"
-                            className="block p-4 border border-[#1a2a1a] bg-[#0d120d] hover:border-[#4a8a4a] hover:bg-[#122012] transition-all duration-300"
+                          <button 
+                            onClick={() => handleOpenLog(post)}
+                            className="w-full text-left block p-4 border border-[#1a2a1a] bg-[#0d120d] hover:border-[#4a8a4a] hover:bg-[#122012] transition-all duration-300"
                           >
                             <div className="text-[0.9rem] leading-relaxed text-[#c0c8a8] group-hover:text-[#a0e080]">
                               {post.title}
@@ -220,7 +263,7 @@ export default function Home() {
                               <span>Ref: {Math.random().toString(36).slice(2, 7)}</span>
                               <span className="group-hover:text-[#6ab06a]">▸ OPEN_LOG</span>
                             </div>
-                          </a>
+                          </button>
                         </div>
                       ))}
                     </div>
@@ -232,10 +275,10 @@ export default function Home() {
           
           <div className="mt-8 flex gap-3 border-t border-[#1a2a1a] pt-6">
             <button 
-              onClick={() => { playSound('click'); setView("mindmap"); }} 
+              onClick={() => { playSound('click'); setView("pinball"); }} 
               className="retro-link !text-[11px] !py-2"
             >
-              ▸  전체 마인드맵 가동
+              ▸  실험 프로젝트 기동
             </button>
             <button 
               onClick={() => { playSound('click'); setView("intro"); }} 
@@ -247,21 +290,92 @@ export default function Home() {
         </section>
       )}
 
-      {view === "mindmap" && (
-        <div className="fixed inset-0 z-50 bg-[#181a1c] flex flex-col">
-          <div className="p-4 flex justify-between items-center border-b border-[#b2ffb2]/30">
-            <span className="text-[0.9rem]">MODE: INTERACTIVE_MINDMAP</span>
+      {view === "pinball" && (
+        <section className="retro-container !m-0 !max-w-[800px] w-full flex flex-col">
+          <div className="status-bar">
+            <span>EXPERIMENTAL_PROJECT: PINBALL_V1.0</span>
             <button 
               onClick={() => { playSound('click'); setView("intro"); }} 
-              className="retro-link !m-0 !py-1"
+              className="hover:text-white transition-colors"
             >
-              [ EXIT ]
+              [ SHUTDOWN ]
             </button>
           </div>
-          <div className="flex-1 relative">
-            <Mindmap />
+          <PinballGame />
+          <div className="mt-4 flex justify-between items-center text-[10px] text-[#5a6a4a] uppercase tracking-widest text-center">
+            <span>Controls: Mouse/Touch (Left/Right) or Arrow Keys</span>
+            <span>Status: Operational</span>
           </div>
-        </div>
+        </section>
+      )}
+    </main>
+  );
+}
+                    {/* Connecting Vertical Line */}
+                    <div className="absolute left-[3px] top-4 bottom-4 w-[1px] bg-[#1a2a1a]"></div>
+
+                    {/* Post Nodes */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4">
+                      {catPosts.map((post, pIdx) => (
+                        <div key={pIdx} className="relative group">
+                          {/* Horizontal Branch Line */}
+                          <div className="absolute -left-4 top-1/2 w-4 h-[1px] bg-[#1a2a1a]"></div>
+                          
+                          <button 
+                            onClick={() => handleOpenLog(post)}
+                            className="w-full text-left block p-4 border border-[#1a2a1a] bg-[#0d120d] hover:border-[#4a8a4a] hover:bg-[#122012] transition-all duration-300"
+                          >
+                            <div className="text-[0.9rem] leading-relaxed text-[#c0c8a8] group-hover:text-[#a0e080]">
+                              {post.title}
+                            </div>
+                            <div className="mt-3 text-[10px] text-[#5a6a4a] flex justify-between uppercase tracking-wider">
+                              <span>Ref: {Math.random().toString(36).slice(2, 7)}</span>
+                              <span className="group-hover:text-[#6ab06a]">▸ OPEN_LOG</span>
+                            </div>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          
+          <div className="mt-8 flex gap-3 border-t border-[#1a2a1a] pt-6">
+            <button 
+              onClick={() => { playSound('click'); setView("pinball"); }} 
+              className="retro-link !text-[11px] !py-2"
+            >
+              ▸  실험 프로젝트 기동
+            </button>
+            <button 
+              onClick={() => { playSound('click'); setView("intro"); }} 
+              className="retro-link !text-[11px] !py-2"
+            >
+              ▸  중앙 시스템으로
+            </button>
+          </div>
+        </section>
+      )}
+
+      {view === "pinball" && (
+        <section className="retro-container !m-0 !max-w-[800px] w-full flex flex-col">
+          <div className="status-bar">
+            <span>EXPERIMENTAL_PROJECT: PINBALL_V1.0</span>
+            <button 
+              onClick={() => { playSound('click'); setView("intro"); }} 
+              className="hover:text-white transition-colors"
+            >
+              [ SHUTDOWN ]
+            </button>
+          </div>
+          <PinballGame />
+          <div className="mt-4 flex justify-between items-center text-[10px] text-[#5a6a4a] uppercase tracking-widest">
+            <span>Controls: Mouse/Touch (Left/Right) or Arrow Keys</span>
+            <span>Status: Operational</span>
+          </div>
+        </section>
       )}
     </main>
   );
