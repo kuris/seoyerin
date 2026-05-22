@@ -47,16 +47,9 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ko" className={`${inter.variable} ${playfair.variable} ${jetbrains.variable} bg-background`}>
-      <body className="font-sans antialiased" style={{ background: 'none' }}>
-        <div className="retro-container">
-          <div className="status-bar">
-            <span>SYSTEM: ONLINE</span>
-            <span>LOCATION: SEO YERIN'S SECRET LAB</span>
-            <span>ACCESS: GRANTED</span>
-          </div>
-          {children}
-        </div>
+    <html lang="ko" className={`${inter.variable} ${playfair.variable} ${jetbrains.variable}`}>
+      <body className="font-sans antialiased">
+        {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
