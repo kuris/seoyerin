@@ -37,6 +37,7 @@ export default function Home() {
   const [view, setView] = useState<"intro" | "list" | "mindmap">("intro");
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const title = useTypewriter("SEO YERIN'S SECRET BOARD", 70);
   const desc = useTypewriter("차분한 타자기 감성의 실험실 게시판입니다. 자유롭게 글을 남기거나, 실험실의 다양한 기능을 탐험해보세요.", 35);
@@ -44,16 +45,28 @@ export default function Home() {
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
+      setProgress(0);
+      
+      // 로딩 퍼센트 시뮬레이션
+      const timer = setInterval(() => {
+        setProgress((old) => {
+          if (old >= 95) return old;
+          return old + Math.floor(Math.random() * 10);
+        });
+      }, 150);
+
       try {
         const res = await fetch('/api/rss');
         const data = await res.json();
         if (Array.isArray(data)) {
           setPosts(data);
+          setProgress(100);
         }
       } catch (e) {
         console.error(e);
       } finally {
-        setLoading(false);
+        clearInterval(timer);
+        setTimeout(() => setLoading(false), 500);
       }
     };
     fetchPosts();
@@ -90,7 +103,20 @@ export default function Home() {
           
           <div className="overflow-y-auto pr-4 custom-scrollbar flex-1 py-2">
             {loading ? (
-              <div className="p-10 text-center animate-pulse">SYNCHRONIZING_DATA...</div>
+              <div className="h-full flex flex-col items-center justify-center p-10 space-y-4">
+                <div className="text-[1.2rem] font-bold animate-pulse tracking-widest">
+                  SYNCHRONIZING_DATABASE... {progress}%
+                </div>
+                <div className="w-full max-w-md h-4 border border-[#b2ffb2]/50 p-[2px]">
+                  <div 
+                    className="h-full bg-[#b2ffb2] transition-all duration-300 shadow-[0_0_10px_#b2ffb2]"
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+                <div className="text-[0.7rem] opacity-50 font-mono">
+                  FETCHING FROM: HTTPS://CHATGUTS.KR/RSS
+                </div>
+              </div>
             ) : (
               <div className="space-y-8">
                 {Object.entries(
