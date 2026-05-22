@@ -81,43 +81,74 @@ export default function Home() {
       )}
 
       {view === "list" && (
-        <section className="retro-container !m-0 !max-w-[800px] w-full max-h-[80vh] flex flex-col">
+        <section className="retro-container !m-0 !max-w-[850px] w-full max-h-[85vh] flex flex-col">
           <div className="status-bar">
-            <span>BOARD: POST_LIST</span>
-            <span>COUNT: {posts.length}</span>
+            <span>BOARD: STRUCTURED_DATABASE</span>
+            <span>NODES: {posts.length}</span>
             <button onClick={() => setView("intro")} className="text-[#b2ffb2] hover:underline">[ 뒤로가기 ]</button>
           </div>
           
-          <div className="overflow-y-auto pr-2 custom-scrollbar flex-1">
+          <div className="overflow-y-auto pr-4 custom-scrollbar flex-1 py-2">
             {loading ? (
-              <div className="p-4 text-center">DATA_FETCHING...</div>
+              <div className="p-10 text-center animate-pulse">SYNCHRONIZING_DATA...</div>
             ) : (
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-[#b2ffb2]/30 text-[0.8rem]">
-                    <th className="py-2 px-1 w-12">[ NO ]</th>
-                    <th className="py-2 px-1">[ TITLE ]</th>
-                    <th className="py-2 px-1 w-24 text-right">[ CAT ]</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {posts.map((post, idx) => (
-                    <tr key={idx} className="border-b border-[#b2ffb2]/10 hover:bg-[#b2ffb2]/5 group cursor-pointer">
-                      <td className="py-2 px-1 text-[0.8rem] opacity-60">{posts.length - idx}</td>
-                      <td className="py-2 px-1">
-                        <a href={post.link} target="_blank" rel="noreferrer" className="block group-hover:underline truncate max-w-[300px] sm:max-w-md">
-                          {post.title}
-                        </a>
-                      </td>
-                      <td className="py-2 px-1 text-right text-[0.75rem] opacity-60">{post.category}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className="space-y-8">
+                {Object.entries(
+                  posts.reduce((acc, post) => {
+                    if (!acc[post.category]) acc[post.category] = [];
+                    acc[post.category].push(post);
+                    return acc;
+                  }, {} as Record<string, Post[]>)
+                ).map(([category, catPosts], cIdx) => (
+                  <div key={category} className="relative pl-6">
+                    {/* Category Node */}
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-4 h-4 border border-[#b2ffb2] rotate-45 flex-shrink-0 bg-[#b2ffb2]/20"></div>
+                      <h2 className="text-[1.1rem] font-bold text-[#b2ffb2] tracking-wider uppercase">
+                        {category} <span className="text-[0.7rem] opacity-50 ml-2">[{catPosts.length}_ITEMS]</span>
+                      </h2>
+                      <div className="flex-1 h-[1px] bg-gradient-to-r from-[#b2ffb2]/50 to-transparent"></div>
+                    </div>
+                    
+                    {/* Connecting Vertical Line */}
+                    <div className="absolute left-[7px] top-6 bottom-4 w-[1px] bg-[#b2ffb2]/30"></div>
+
+                    {/* Post Nodes */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pl-4">
+                      {catPosts.map((post, pIdx) => (
+                        <div key={pIdx} className="relative group">
+                          {/* Horizontal Branch Line */}
+                          <div className="absolute -left-4 top-1/2 w-4 h-[1px] bg-[#b2ffb2]/30"></div>
+                          
+                          <a 
+                            href={post.link} 
+                            target="_blank" 
+                            rel="noreferrer"
+                            className="block p-3 border border-[#b2ffb2]/20 bg-[#b2ffb2]/5 hover:bg-[#b2ffb2]/20 hover:border-[#b2ffb2]/60 transition-all duration-200 group-hover:translate-x-1"
+                          >
+                            <div className="text-[0.85rem] leading-snug line-clamp-2">
+                              {post.title}
+                            </div>
+                            <div className="mt-2 text-[0.65rem] opacity-40 flex justify-between uppercase">
+                              <span>ID: {Math.random().toString(16).slice(2, 8)}</span>
+                              <span>LINK_READY</span>
+                            </div>
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
           
-          <div className="mt-4 flex gap-2">
+          <div className="mt-6 flex gap-2 border-t border-[#b2ffb2]/20 pt-4">
+            <button onClick={() => setView("mindmap")} className="retro-link !text-[0.75rem]">[ 인터랙티브 마인드맵 ]</button>
+            <button onClick={() => setView("intro")} className="retro-link !text-[0.75rem]">[ 루트 시스템 ]</button>
+          </div>
+        </section>
+      )}
             <button onClick={() => setView("mindmap")} className="retro-link">[ 마인드맵 전환 ]</button>
             <button onClick={() => setView("intro")} className="retro-link">[ 홈으로 ]</button>
           </div>
