@@ -224,11 +224,6 @@ export default function Home() {
           </div>
         </section>
       )}
-            <button onClick={() => setView("mindmap")} className="retro-link">[ 마인드맵 전환 ]</button>
-            <button onClick={() => setView("intro")} className="retro-link">[ 홈으로 ]</button>
-          </div>
-        </section>
-      )}
 
       {view === "mindmap" && (
         <div className="fixed inset-0 z-50 bg-[#181a1c] flex flex-col">
