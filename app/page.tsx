@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Mindmap } from "@/components/mindmap"
+import { playSound } from "@/lib/sound"
 
 // 타자기 타이핑 효과
 function useTypewriter(text: string, speed = 50) {
@@ -15,6 +16,12 @@ function useTypewriter(text: string, speed = 50) {
     function type() {
       if (i < text.length) {
         setDisplayed(text.slice(0, i + 1));
+        
+        // 글자가 타이핑될 때 소리 재생 (공백 제외)
+        if (text.charAt(i) !== ' ') {
+          playSound('typewriter');
+        }
+        
         i++;
         timeoutId = setTimeout(type, speed + Math.random() * 30);
       }
@@ -86,9 +93,27 @@ export default function Home() {
             {desc}
           </div>
           <div className="flex flex-wrap gap-2">
-            <button onClick={() => setView("list")} className="retro-link">[ 게시글 목록 ]</button>
-            <button onClick={() => setView("mindmap")} className="retro-link">[ 마인드맵 뷰 ]</button>
-            <a href="https://chatgpts.kr" target="_blank" rel="noreferrer" className="retro-link">[ 새 글 작성 ]</a>
+            <button 
+              onClick={() => { playSound('click'); setView("list"); }} 
+              className="retro-link"
+            >
+              [ 게시글 목록 ]
+            </button>
+            <button 
+              onClick={() => { playSound('click'); setView("mindmap"); }} 
+              className="retro-link"
+            >
+              [ 마인드맵 뷰 ]
+            </button>
+            <a 
+              href="https://chatgpts.kr" 
+              target="_blank" 
+              rel="noreferrer" 
+              className="retro-link"
+              onClick={() => playSound('click')}
+            >
+              [ 새 글 작성 ]
+            </a>
           </div>
         </section>
       )}
@@ -98,7 +123,12 @@ export default function Home() {
           <div className="status-bar">
             <span>BOARD: STRUCTURED_DATABASE</span>
             <span>NODES: {posts.length}</span>
-            <button onClick={() => setView("intro")} className="text-[#b2ffb2] hover:underline">[ 뒤로가기 ]</button>
+            <button 
+              onClick={() => { playSound('click'); setView("intro"); }} 
+              className="text-[#b2ffb2] hover:underline"
+            >
+              [ 뒤로가기 ]
+            </button>
           </div>
           
           <div className="overflow-y-auto pr-4 custom-scrollbar flex-1 py-2">
@@ -170,8 +200,18 @@ export default function Home() {
           </div>
           
           <div className="mt-6 flex gap-2 border-t border-[#b2ffb2]/20 pt-4">
-            <button onClick={() => setView("mindmap")} className="retro-link !text-[0.75rem]">[ 인터랙티브 마인드맵 ]</button>
-            <button onClick={() => setView("intro")} className="retro-link !text-[0.75rem]">[ 루트 시스템 ]</button>
+            <button 
+              onClick={() => { playSound('click'); setView("mindmap"); }} 
+              className="retro-link !text-[0.75rem]"
+            >
+              [ 인터랙티브 마인드맵 ]
+            </button>
+            <button 
+              onClick={() => { playSound('click'); setView("intro"); }} 
+              className="retro-link !text-[0.75rem]"
+            >
+              [ 루트 시스템 ]
+            </button>
           </div>
         </section>
       )}
@@ -185,7 +225,12 @@ export default function Home() {
         <div className="fixed inset-0 z-50 bg-[#181a1c] flex flex-col">
           <div className="p-4 flex justify-between items-center border-b border-[#b2ffb2]/30">
             <span className="text-[0.9rem]">MODE: INTERACTIVE_MINDMAP</span>
-            <button onClick={() => setView("intro")} className="retro-link !m-0 !py-1">[ EXIT ]</button>
+            <button 
+              onClick={() => { playSound('click'); setView("intro"); }} 
+              className="retro-link !m-0 !py-1"
+            >
+              [ EXIT ]
+            </button>
           </div>
           <div className="flex-1 relative">
             <Mindmap />
